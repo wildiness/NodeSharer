@@ -1,11 +1,11 @@
-# Node sharer
+# Node sharer (Beta)
 
 Easily share procedural materials and shader node setups as text!
 
 ![NodeSharer](./img/ns_header1_crop.png)
 
 ## Installation
-1. Download the zip file from the release page 
+1. Download the zip-file from the green "Code" button near the top of the page.
 2. In Blender, go to Edit > Preferences > Add-ons
 3. Choose "Install..." and select the just downloaded zip-file.
 4. Node sharer should appear in the list. Check the checkbox to activate it.
@@ -61,8 +61,8 @@ and so the pasted nodes will not have the correct files selected.
 * The Node Sharer commands will appear in all node editors, including those from
 other add-ons. However, the command will most likely not work with the custom nodes.
 
-* If you use Blender in a language other than english and/or name nodes with non standard characters
-, that could cause problems, maybe.
+* If you use Blender in a language other than english and/or name nodes with non standard characters,
+ that could cause problems, maybe.
 
 ### Contributing
 Pull request will be accepted(if I can figure out how to do it), but no PEP8ifying.

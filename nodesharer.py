@@ -6,7 +6,6 @@ bl_info = {
     "location": "Node Editor Toolbar",
     "description": "Share node setups as text strings.",
     "warning": "Did I name this beta? It's actually alpha AF",
-    "doc_url": "TBA",
     "category": "Node",
 }
 
