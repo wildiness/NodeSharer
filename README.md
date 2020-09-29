@@ -5,11 +5,11 @@ Easily share procedural materials and shader node setups as text!
 ![NodeSharer](./img/ns_header1_crop.png)
 
 ## Installation
-1. Download the zip-file from the green "Code" button near the top of the page.
+1. Download the zip-file from the green "Code" button near the top of the page or by clicking [here](https://github.com/wildiness/NodeSharer/archive/master.zip).
 2. In Blender, go to Edit > Preferences > Add-ons
 3. Choose "Install..." and select the just downloaded zip-file.
 4. Node sharer should appear in the list. Check the checkbox to activate it.
-5. Copy the text string below then paste it in the Shader editor!
+5. Copy the text string below then, in Blender, go to the shading tab, in the shader editor press "Node" then scroll to the top of the list and select Paste material!
 
 NS0B2900!eNqtVk1vozAQ/SuVz06EDeSDW7NNo0hJdtVuV12tKuQEJ7FEIAKT7ariv3dsTEnBaffQAwLPjMdv3jwGXlDCDhwFSPJcUoSR/HdUywOTPBMsBkuSRjxHwQtaGtvV90IeC6lM6zgUkclwv2cRz1YQXfmXTQqRwFrnoCj44/QdbK6nEpx5yDZSnHiYmrwyKzhGcbqBYNd3ses4T7gG2kYBkFm247ANXS8WCBL+SrM0ScXVT/4si4z3Hce/jBWCTDxkikQuWbJREdOHb4v5zfR6BeYtZyoRWG/pu2qcVjUYERSoharTV3cXBUTdPWX3MfL1uqyr6w2JgwkhTXk28BhVzNRnQiuKfJexEz8LG6KAlqUODaOTidRYyHuUBintYHdNvMaqMJ4qLGEkDjzJRZoAAOTeKI5nGYsET+QZAPIhyfUGKGZnHkOjtcV8Nb2++5DYhrAxGeEe8fyGMSuUd5RpZFZV+B3GLExVPVWRFtoHH1Zdb/h/1Xj9oe6E36e6E25/rFVDlX9g4oYtFRF4Q3DPJR7kOpgjO107cxnibydL1LxXttq6yrPSSPEFRXo2RWomxfNl4sB5N5vA4euYJ1GNdjl/bNOoX6m2vMmbvEllgUJGb56GNJdQTB33bLIApm7BPzKRbMQx5tHV5P7mFg79XDMQUOQ8ZPFxz1CwZXHOK8smZoejsZSXSPtSPdVTaNQnWk9aR5/pyXMp7g1GX6umoW2OKRk4VpFglO/Tv6Gs9lcfBTB22nGJrUkebZtgM9wzsS4kFKHGxuzRwqISSnWRNpNGThQuUk1LS7xn4n0jzjOG9Xpk1uN6Nr8NaVLLmdaWah678OSp/njK6dfOOjEZWuVPRubDQ8YdddCuYCi5NHAHrc9vm39LT9u/Cbq/ebHOi2zLNjw8cLlPI8g1ebhbTH+jsixfAao5cd4=
 
@@ -30,6 +30,8 @@ of this text string in the Blender info pop-up.
 Save your file before pasting! This command creates a new material from the Node Sharer text string saved in
 the clipboard. Take note of the material name in the Blender info pop-up.
 The material can then be selected in the Shader editor material selector.
+
+![Menu location](./img/node_menu.png)
 
 ##### The text strings
 The first 8-10 characters in an Node Sharer text string always follow the following format:
