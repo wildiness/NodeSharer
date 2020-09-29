@@ -31,6 +31,7 @@ bl_info = {
     "description": "Share node setups as text strings.",
     "warning": "Did I name this beta? It's actually alpha AF",
     "category": "Node",
+    "tracker_url": "https://github.com/wildiness/NodeSharer",
 }
 
 
