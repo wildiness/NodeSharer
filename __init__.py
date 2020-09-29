@@ -29,7 +29,7 @@ bl_info = {
     "blender": (2, 90, 0),
     "location": "Node Editor Toolbar",
     "description": "Share node setups as text strings.",
-    "warning": "Did I name this beta? It's actually alpha AF",
+    "warning": "Can crash to desktop when pasting node groups. Save your work before pasting.",
     "category": "Node",
     "tracker_url": "https://github.com/wildiness/NodeSharer",
 }
