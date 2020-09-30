@@ -4,8 +4,7 @@ Easily share procedural materials and shader node setups as text!
 
 ![NodeSharer](./img/ns_header1_crop.png)
 
-![showcase](https://giant.gfycat.com/LimpingUnequaledChameleon.webm)
-
+![showcase](https://thumbs.gfycat.com/LimpingUnequaledChameleon-size_restricted.gif)
 ## Installation
 1. Download the zip-file from the green "Code" button near the top of the page or by clicking [here](https://github.com/wildiness/NodeSharer/archive/master.zip).
 2. In Blender, go to Edit > Preferences > Add-ons
