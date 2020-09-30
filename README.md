@@ -4,6 +4,8 @@ Easily share procedural materials and shader node setups as text!
 
 ![NodeSharer](./img/ns_header1_crop.png)
 
+![showcase](https://giant.gfycat.com/LimpingUnequaledChameleon.webm)
+
 ## Installation
 1. Download the zip-file from the green "Code" button near the top of the page or by clicking [here](https://github.com/wildiness/NodeSharer/archive/master.zip).
 2. In Blender, go to Edit > Preferences > Add-ons
@@ -43,6 +45,10 @@ Node sharer text strings are JSON representations of materials, compressed with 
 and then converted to base64. This way of sharing data is taken directly from the game Factorio. 
 In which you can share blueprints of machines and assembly lines as text strings. 
 
+### Support/help and bug reports
+Creat a ticket here on Github or contact me on discord: wildiness hashtag 7533. But please check the list below first, 
+It might be a known issue.
+
 ### Limitations and know bugs
 * This is a Beta release, be careful and save your project before using the Node Sharer commands
 
@@ -53,20 +59,23 @@ In which you can share blueprints of machines and assembly lines as text strings
     - Texture coordinate with an object selected/chosen (TBA)
     - Script
     - UV map
+    - Frame
 
 * Pasting materials, materials with groups and especially nested groups can cause a crash to desktop. 
 Avoid coping materials with groups for now. And only paste materials in a **SAVED** blend file.
 
-* Nodes that use a file browser will not have the file path sent with Node Sharer, 
-and so the pasted nodes will not have the correct files selected.
+* Nodes that use a file browser or object/UV map/Vertex group selector will not have the file path/object sent with Node Sharer, 
+and so the pasted nodes will not have the correct files/object selected.
 
 * The Node Sharer commands will appear in all node editors, including those from
-other add-ons. However, the command will most likely not work with the custom nodes.
+other add-ons. However, the command will most likely not work with these custom nodes.
 
 * If you use Blender in a language other than english and/or name nodes with non standard characters,
  that could cause problems, maybe.
 
 ### Contributing
+Share it with your friends! The usability of this add-on increases exponentially with the amount of users.
+
 Pull request will be accepted(if I can figure out how to do it), but no PEP8ifying.
 Create an issue first, to go along side the PR.
 
