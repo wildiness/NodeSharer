@@ -25,14 +25,14 @@ SOFTWARE.
 bl_info = {
     "name": "Node Sharer",
     "author": "NodeSharer Devs",
-    "version": (0, 1, 0),
+    "version": (0, 1, 1),
     "blender": (2, 90, 0),
     "location": "Node Editor Toolbar",
     "description": "Share node setups as text strings.",
-    "warning": "Did I name this beta? It's actually alpha AF",
+    "warning": "Blender can crash when pasting node groups. Save your work before pasting.",
     "category": "Node",
     "tracker_url": "https://github.com/wildiness/NodeSharer",
-}
+}  # outdated? remove?
 
 import bpy
 import pprint
@@ -66,12 +66,12 @@ class NS_node:
 
     _prop_common_ignored = ('bl_description', 'bl_icon', 'bl_label', 'type', 'bl_height_default', 'bl_height_max',
                             'bl_height_min', 'bl_rna', 'bl_static_type', 'bl_width_default',
-                            'bl_width_max', 'bl_width_min', 'draw_buttons', 'draw_buttons_ext', 'height',
+                            'bl_width_max', 'bl_width_min', 'draw_buttons', 'draw_buttons_ext',
                             'input_template', 'texture_mapping', 'uv_map', 'color_mapping',
                             'internal_links', 'is_registered_node_type', 'output_template', 'poll', 'poll_instance',
-                            'rna_type', 'socket_value_update', 'update', 'image_user',
-                            'width', 'width_hidden', 'color', 'interface',
-                            'dimensions')  # never saved cus they are useless or created with the node by blender
+                            'rna_type', 'socket_value_update', 'update', 'image_user', 'dimensions',
+                            'width_hidden', 'interface', 'object', 'text', 'color', 'height',
+                            'width',)  # never saved cus they are useless or created with the node by blender
 
     def __init__(self, node, *args, **kwargs):
         self.properties = {}
@@ -205,13 +205,15 @@ class NS_node:
                 self.properties[k] = tmp_cr
 
             else:  # Catch all. for the random named attributes
-                if not inspect.isclass(tmp_prop[k]):
+                # if not inspect.isclass(tmp_prop[k]):
+                if isinstance(tmp_prop[k], (int, str, bool, float)):
                     self.properties[k] = tmp_prop[k]
                 else:
                     try:
                         self.properties[k] = tmp_prop[k].name
                     except:
-                        self.properties[k] = 'object'
+                        pass
+                        # self.properties[k] = 'object'
 
         return to_return  # Return to pass through
 
