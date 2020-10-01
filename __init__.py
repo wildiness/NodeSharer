@@ -25,13 +25,13 @@ SOFTWARE.
 bl_info = {
     "name": "Node Sharer",
     "author": "NodeSharer Devs",
-    "version": (0, 1, 1),
+    "version": (0, 1, 2),
     "blender": (2, 90, 0),
     "location": "Node Editor Toolbar",
     "description": "Share node setups as text strings.",
     "warning": "Blender can crash when pasting node groups. Save your work before pasting.",
     "category": "Node",
-    "tracker_url": "https://github.com/wildiness/NodeSharer",
+    "tracker_url": "https://github.com/wildiness/NodeSharer#supporthelp-and-bug-reports",
 }
 
 
