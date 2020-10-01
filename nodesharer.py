@@ -25,13 +25,13 @@ SOFTWARE.
 bl_info = {
     "name": "Node Sharer",
     "author": "NodeSharer Devs",
-    "version": (0, 1, 1),
+    "version": (0, 1, 2),
     "blender": (2, 90, 0),
     "location": "Node Editor Toolbar",
     "description": "Share node setups as text strings.",
     "warning": "Blender can crash when pasting node groups. Save your work before pasting.",
     "category": "Node",
-    "tracker_url": "https://github.com/wildiness/NodeSharer",
+    "tracker_url": "https://github.com/wildiness/NodeSharer#supporthelp-and-bug-reports",
 }  # outdated? remove?
 
 import bpy
@@ -71,7 +71,7 @@ class NS_node:
                             'internal_links', 'is_registered_node_type', 'output_template', 'poll', 'poll_instance',
                             'rna_type', 'socket_value_update', 'update', 'image_user', 'dimensions',
                             'width_hidden', 'interface', 'object', 'text', 'color', 'height',
-                            'width',)  # never saved cus they are useless or created with the node by blender
+                            'width', 'filepath')  # never saved cus they are useless or created with the node by blender
 
     def __init__(self, node, *args, **kwargs):
         self.properties = {}
@@ -169,24 +169,23 @@ class NS_node:
                 value = tmp_prop[k]
                 if value != self._prop_optional[k]:
                     self.properties[k] = value
+                    if k == 'use_custom_color':
+                        self.properties['color'] = tuple(round(tmp_v, 5) for tmp_v in tmp_prop['color'])
 
             elif k in self._prop_common_ignored:  # Sort out all unwanted properties
-                tmp_prop[k] = ''
+                continue
 
             elif k[:1] == '_':  # Sort out double underscore
-                tmp_prop[k] = ''
+                continue
 
             elif k == 'image':  # Save the image name, could possible be covered by catch all
-                # dump(tmp_prop[k])
                 try:
                     self.properties['image'] = tmp_prop[k].name
                 except:
                     pass
             elif k == 'node_tree':
                 try:
-                    # self.properties['node_tree'] = NS_group(tmp_prop[k]).ret_nodes()
                     self.properties['node_tree'] = tmp_prop[k].name
-                    # return {tmp_prop[k].name: NS_group(tmp_prop[k])}
                     to_return = {tmp_prop[k].name: NS_group(tmp_prop[k])}
                 except Exception as e:
                     print('Group node tree failed')
@@ -205,7 +204,6 @@ class NS_node:
                 self.properties[k] = tmp_cr
 
             else:  # Catch all. for the random named attributes
-                # if not inspect.isclass(tmp_prop[k]):
                 if isinstance(tmp_prop[k], (int, str, bool, float)):
                     self.properties[k] = tmp_prop[k]
                 else:
@@ -396,7 +394,6 @@ class NS_mat_constructor(NS_nodetree):
                     print(e)
 
         # Construct material node tree
-        # self.b_nodes = bpy.data.materials[self.b_mat_name_actual].node_tree.nodes  # Update nodes to possibly avoid crashing
         # self.construct(self.ns_nodes, self.b_mat.node_tree, is_material=True)  # Original
 
         self.construct(self.ns_nodes, bpy.data.materials[self.b_mat_name_actual].node_tree, self.b_mat_name_actual,
@@ -477,7 +474,6 @@ class NS_mat_constructor(NS_nodetree):
             if ns_node_tree is not None:
                 try:
                     node.node_tree = bpy.data.node_groups[self._created_groups[ns_node_tree]]
-                    # node.node_tree = self._created_groups[ns_node_tree]
                 except Exception as e:
                     print('Group node node tree assignment failed')
                     print(e)
@@ -554,7 +550,7 @@ class NS_mat_constructor(NS_nodetree):
 
 
 class OBJECT_MT_ns_copy_material(bpy.types.Operator):
-    """Copy complete material node setup as text string"""  # Use this as a tooltip for menu items and buttons.
+    """Node Sharer: Copy complete material node setup as text string"""  # Use this as a tooltip for menu items and buttons.
     bl_idname = "node.ns_copy_material"  # Unique identifier for buttons and menu items to reference.
     bl_label = "Copy material as text string"  # Display name in the interface.
     bl_options = {'REGISTER'}  # 
@@ -571,7 +567,7 @@ class OBJECT_MT_ns_copy_material(bpy.types.Operator):
 
 
 class OBJECT_MT_ns_paste_material(bpy.types.Operator):
-    """Paste complete material node setup from text string"""  # Use this as a tooltip for menu items and buttons.
+    """Node Sharer: Paste complete material node setup from text string"""  # Use this as a tooltip for menu items and buttons.
     bl_idname = "node.ns_paste_material"  # Unique identifier for buttons and menu items to reference.
     bl_label = "Paste material from text string in clipboard"  # Display name in the interface.
     bl_options = {'REGISTER'}  #
