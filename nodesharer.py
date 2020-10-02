@@ -25,7 +25,7 @@ SOFTWARE.
 bl_info = {
     "name": "Node Sharer",
     "author": "NodeSharer Devs",
-    "version": (0, 1, 2),
+    "version": (0, 1, 3),
     "blender": (2, 90, 0),
     "location": "Node Editor Toolbar",
     "description": "Share node setups as text strings.",
@@ -538,27 +538,33 @@ class NS_mat_constructor(NS_nodetree):
             k, v = l.popitem()
 
             for output, targets in v.items():
-                for name, i in targets.items():
+                for name, ids in targets.items():
+                    input_ids = []
                     try:
-                        # nt.links.new(b_nodes[k].outputs[int(output)], b_nodes[name].inputs[i])  # original
-                        if is_material:
-                            bpy.data.materials[self.b_mat_name_actual].node_tree.links.new(
-                                bpy.data.materials[self.b_mat_name_actual].node_tree.nodes[b_node_names[k]].outputs[
-                                    int(output)],
-                                bpy.data.materials[self.b_mat_name_actual].node_tree.nodes[b_node_names[name]].inputs[
-                                    i])  # test
-                        elif is_nodegroup:
-                            bpy.data.node_groups[nt_parent_name].links.new(
-                                bpy.data.node_groups[nt_parent_name].nodes[b_node_names[k]].outputs[int(output)],
-                                bpy.data.node_groups[nt_parent_name].nodes[b_node_names[name]].inputs[i])  # test
-                    except Exception as e:
-                        print('Failed to link')
-                        print(e)
+                        input_ids.extend(ids)
+                    except TypeError:
+                        input_ids.append(ids)
+                    for i in input_ids:
+                        try:
+                            # nt.links.new(b_nodes[k].outputs[int(output)], b_nodes[name].inputs[i])  # original
+                            if is_material:
+                                bpy.data.materials[self.b_mat_name_actual].node_tree.links.new(
+                                    bpy.data.materials[self.b_mat_name_actual].node_tree.nodes[b_node_names[k]].outputs[
+                                        int(output)],
+                                    bpy.data.materials[self.b_mat_name_actual].node_tree.nodes[
+                                        b_node_names[name]].inputs[i])  # test
+                            elif is_nodegroup:
+                                bpy.data.node_groups[nt_parent_name].links.new(
+                                    bpy.data.node_groups[nt_parent_name].nodes[b_node_names[k]].outputs[int(output)],
+                                    bpy.data.node_groups[nt_parent_name].nodes[b_node_names[name]].inputs[i])  # test
+                        except Exception as e:
+                            print('Failed to link')
+                            print(e)
 
         for k, v in to_parent.items():
             try:
                 bpy.data.materials[self.b_mat_name_actual].node_tree.nodes[b_node_names[k]].parent = \
-                bpy.data.materials[self.b_mat_name_actual].node_tree.nodes[b_node_names[v]]
+                    bpy.data.materials[self.b_mat_name_actual].node_tree.nodes[b_node_names[v]]
                 # Location of the frame, if shrink is active, depends on the location of the nodes parented to the frame
                 # but the location of the nodes parented to the frame depends on the location of the frame
                 # the end result is that the frame does not appear in correct position as when copied
