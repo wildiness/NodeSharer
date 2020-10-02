@@ -58,7 +58,8 @@ It might be a known issue.
     - RGB Curves (To be added)
     - Vector Curves (TBA)
     - Script
-    - Frame
+    - Frame. The frame will not keep its size. And if nodes are parented(=placed inside) to the frame, 
+    the pasted location will be wrong.
 
 * Pasting materials with groups and especially nested groups can cause a crash to desktop. 
 Avoid copying materials with groups for now. And only paste materials in a **SAVED** blend file.
