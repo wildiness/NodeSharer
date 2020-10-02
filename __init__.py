@@ -25,7 +25,7 @@ SOFTWARE.
 bl_info = {
     "name": "Node Sharer",
     "author": "NodeSharer Devs",
-    "version": (0, 1, 2),
+    "version": (0, 1, 3),
     "blender": (2, 90, 0),
     "location": "Node Editor Toolbar",
     "description": "Share node setups as text strings.",
