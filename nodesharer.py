@@ -168,6 +168,9 @@ class NS_node:
             elif k in self._prop_optional:
                 value = tmp_prop[k]
                 if value != self._prop_optional[k]:
+                    if k == 'parent':
+                        self.properties[k] = value.name
+                        continue
                     self.properties[k] = value
                     if k == 'use_custom_color':
                         self.properties['color'] = tuple(round(tmp_v, 5) for tmp_v in tmp_prop['color'])
@@ -428,6 +431,7 @@ class NS_mat_constructor(NS_nodetree):
         """
         # b_nodes = nt.nodes  # original
         to_link = []
+        to_parent = {}
         b_node_names = {}  # Node sharer name: blender actual name
 
         if is_material:
@@ -518,6 +522,10 @@ class NS_mat_constructor(NS_nodetree):
                         node.color_ramp.elements[i].color = c
                     i += 1
 
+            parent = n.pop('parent', None)
+            if parent is not None:
+                to_parent[name] = parent
+
             while len(n) > 0:
                 k, v = n.popitem()
                 try:
@@ -531,7 +539,6 @@ class NS_mat_constructor(NS_nodetree):
 
             for output, targets in v.items():
                 for name, i in targets.items():
-
                     try:
                         # nt.links.new(b_nodes[k].outputs[int(output)], b_nodes[name].inputs[i])  # original
                         if is_material:
@@ -547,6 +554,18 @@ class NS_mat_constructor(NS_nodetree):
                     except Exception as e:
                         print('Failed to link')
                         print(e)
+
+        for k, v in to_parent.items():
+            try:
+                bpy.data.materials[self.b_mat_name_actual].node_tree.nodes[b_node_names[k]].parent = \
+                bpy.data.materials[self.b_mat_name_actual].node_tree.nodes[b_node_names[v]]
+                # Location of the frame, if shrink is active, depends on the location of the nodes parented to the frame
+                # but the location of the nodes parented to the frame depends on the location of the frame
+                # the end result is that the frame does not appear in correct position as when copied
+                # tasking the location of a node and re-applying it after parenting to a frame does not solve the issue
+            except Exception as e:
+                print('Failed to parent node')
+                print(e)
 
 
 class OBJECT_MT_ns_copy_material(bpy.types.Operator):
