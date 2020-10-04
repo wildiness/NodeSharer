@@ -563,8 +563,12 @@ class NS_mat_constructor(NS_nodetree):
 
         for k, v in to_parent.items():
             try:
-                bpy.data.materials[self.b_mat_name_actual].node_tree.nodes[b_node_names[k]].parent = \
-                    bpy.data.materials[self.b_mat_name_actual].node_tree.nodes[b_node_names[v]]
+                if is_material:
+                    bpy.data.materials[self.b_mat_name_actual].node_tree.nodes[b_node_names[k]].parent = \
+                        bpy.data.materials[self.b_mat_name_actual].node_tree.nodes[b_node_names[v]]
+                elif is_nodegroup:
+                    bpy.data.node_groups[nt_parent_name].nodes[b_node_names[k]].parent = \
+                        bpy.data.node_groups[nt_parent_name].nodes[b_node_names[v]]
                 # Location of the frame, if shrink is active, depends on the location of the nodes parented to the frame
                 # but the location of the nodes parented to the frame depends on the location of the frame
                 # the end result is that the frame does not appear in correct position as when copied
