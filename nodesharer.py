@@ -540,10 +540,10 @@ class NS_mat_constructor(NS_nodetree):
             for output, targets in v.items():
                 for name, ids in targets.items():
                     input_ids = []
-                    try:
+                    if isinstance(ids, int):  # ids can be int or list.
+                        input_ids.append(ids)  # This is the very first backwards compatabilty compromise!
+                    else:
                         input_ids.extend(ids)
-                    except TypeError:
-                        input_ids.append(ids)
                     for i in input_ids:
                         try:
                             # nt.links.new(b_nodes[k].outputs[int(output)], b_nodes[name].inputs[i])  # original
