@@ -70,7 +70,7 @@ class NS_node:
                             'input_template', 'texture_mapping', 'uv_map', 'color_mapping',
                             'internal_links', 'is_registered_node_type', 'output_template', 'poll', 'poll_instance',
                             'rna_type', 'socket_value_update', 'update', 'image_user', 'dimensions',
-                            'width_hidden', 'interface', 'object', 'text', 'color', 'height',
+                            'width_hidden', 'interface', 'object', 'text', 'color', 'height', 'image',
                             'width', 'filepath')  # never saved cus they are useless or created with the node by blender
 
     def __init__(self, node, *args, **kwargs):
@@ -169,11 +169,6 @@ class NS_node:
             elif k[:1] == '_':  # Sort out double underscore
                 continue
 
-            elif k == 'image':  # Save the image name, could possible be covered by catch all
-                try:
-                    self.properties['image'] = tmp_prop[k].name
-                except:
-                    pass
             elif k == 'node_tree':
                 try:
                     self.properties['node_tree'] = tmp_prop[k].name
