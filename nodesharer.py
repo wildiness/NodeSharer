@@ -77,18 +77,6 @@ class NS_node:
         self.properties = {}
         self.node = node
 
-        # try:
-        #     dump(node.mapping)
-        #     print('is mapping class?: ' + str(inspect.isclass(node.mapping)))
-        #     print('is mapping module?: ' + str(inspect.ismodule(node.mapping)))
-        #     for c in node.mapping.curves:
-        #         print(c)
-        #         dump(c)
-        #         for p in c.points:
-        #             dump(p)
-        # except:
-        #     pass
-
         self.pass_through = self.storenode()
         self.name = self.properties['name']
 
@@ -205,6 +193,28 @@ class NS_node:
                     tmp_elements[round(element.position, 5)] = tuple(round(tmp_v, 5) for tmp_v in element.color)
                 tmp_cr['elements'] = tmp_elements
                 self.properties[k] = tmp_cr
+
+            elif k == 'mapping':
+                tmp_mapping = {}
+                tmp_curves = {}
+
+                tmp_mapping['clip_max_x'] = tmp_prop[k].clip_max_x
+                tmp_mapping['clip_max_y'] = tmp_prop[k].clip_max_y
+                tmp_mapping['clip_min_x'] = tmp_prop[k].clip_min_x
+                tmp_mapping['clip_min_y'] = tmp_prop[k].clip_min_y
+
+                tmp_mapping['extend'] = tmp_prop[k].extend
+                tmp_mapping['tone'] = tmp_prop[k].tone
+                tmp_mapping['use_clip'] = tmp_prop[k].use_clip
+
+                for idc, curve in enumerate(tmp_prop[k].curves):
+                    tmp_points = {}
+                    for idp, point in enumerate(curve.points):
+                        tmp_points[idp] = (round(point.location[0], 5), round(point.location[1], 5),)
+                    tmp_curves[idc] = tmp_points
+                tmp_mapping['curves'] = tmp_curves
+
+                self.properties[k] = tmp_mapping
 
             else:  # Catch all. for the random named attributes
                 if isinstance(tmp_prop[k], (int, str, bool, float)):
@@ -521,6 +531,24 @@ class NS_mat_constructor(NS_nodetree):
                         node.color_ramp.elements[i].position = float(p)
                         node.color_ramp.elements[i].color = c
                     i += 1
+
+            mapping = n.pop('mapping', None)
+            if mapping is not None:
+                curves = mapping.pop('curves')
+                for idc, curve in curves.items():
+                    for idp, point in curve.items():
+                        if int(idp) > 1:
+                            node.mapping.curves[int(idc)].points.new(point[0], point[1])
+                        else:
+                            node.mapping.curves[int(idc)].points[int(idp)].location = point
+
+                while len(mapping) > 0:
+                    k, v = mapping.popitem()
+                    try:
+                        setattr(node.mapping, k, v)
+                    except Exception as e:
+                        print('failed to set mapping attribute: ' + str(k))
+                        print(e)
 
             parent = n.pop('parent', None)
             if parent is not None:
