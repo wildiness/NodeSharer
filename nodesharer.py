@@ -25,7 +25,7 @@ SOFTWARE.
 bl_info = {
     "name": "Node Sharer",
     "author": "NodeSharer Devs",
-    "version": (0, 1, 3),
+    "version": (0, 1, 4),
     "blender": (2, 90, 0),
     "location": "Node Editor Toolbar",
     "description": "Share node setups as text strings.",
@@ -70,24 +70,12 @@ class NS_node:
                             'input_template', 'texture_mapping', 'uv_map', 'color_mapping',
                             'internal_links', 'is_registered_node_type', 'output_template', 'poll', 'poll_instance',
                             'rna_type', 'socket_value_update', 'update', 'image_user', 'dimensions',
-                            'width_hidden', 'interface', 'object', 'text', 'color', 'height',
+                            'width_hidden', 'interface', 'object', 'text', 'color', 'height', 'image',
                             'width', 'filepath')  # never saved cus they are useless or created with the node by blender
 
     def __init__(self, node, *args, **kwargs):
         self.properties = {}
         self.node = node
-
-        # try:
-        #     dump(node.mapping)
-        #     print('is mapping class?: ' + str(inspect.isclass(node.mapping)))
-        #     print('is mapping module?: ' + str(inspect.ismodule(node.mapping)))
-        #     for c in node.mapping.curves:
-        #         print(c)
-        #         dump(c)
-        #         for p in c.points:
-        #             dump(p)
-        # except:
-        #     pass
 
         self.pass_through = self.storenode()
         self.name = self.properties['name']
@@ -181,11 +169,6 @@ class NS_node:
             elif k[:1] == '_':  # Sort out double underscore
                 continue
 
-            elif k == 'image':  # Save the image name, could possible be covered by catch all
-                try:
-                    self.properties['image'] = tmp_prop[k].name
-                except:
-                    pass
             elif k == 'node_tree':
                 try:
                     self.properties['node_tree'] = tmp_prop[k].name
@@ -205,6 +188,28 @@ class NS_node:
                     tmp_elements[round(element.position, 5)] = tuple(round(tmp_v, 5) for tmp_v in element.color)
                 tmp_cr['elements'] = tmp_elements
                 self.properties[k] = tmp_cr
+
+            elif k == 'mapping':
+                tmp_mapping = {}
+                tmp_curves = {}
+
+                tmp_mapping['clip_max_x'] = tmp_prop[k].clip_max_x
+                tmp_mapping['clip_max_y'] = tmp_prop[k].clip_max_y
+                tmp_mapping['clip_min_x'] = tmp_prop[k].clip_min_x
+                tmp_mapping['clip_min_y'] = tmp_prop[k].clip_min_y
+
+                tmp_mapping['extend'] = tmp_prop[k].extend
+                tmp_mapping['tone'] = tmp_prop[k].tone
+                tmp_mapping['use_clip'] = tmp_prop[k].use_clip
+
+                for idc, curve in enumerate(tmp_prop[k].curves):
+                    tmp_points = {}
+                    for idp, point in enumerate(curve.points):
+                        tmp_points[idp] = (round(point.location[0], 5), round(point.location[1], 5),)
+                    tmp_curves[idc] = tmp_points
+                tmp_mapping['curves'] = tmp_curves
+
+                self.properties[k] = tmp_mapping
 
             else:  # Catch all. for the random named attributes
                 if isinstance(tmp_prop[k], (int, str, bool, float)):
@@ -522,6 +527,24 @@ class NS_mat_constructor(NS_nodetree):
                         node.color_ramp.elements[i].color = c
                     i += 1
 
+            mapping = n.pop('mapping', None)
+            if mapping is not None:
+                curves = mapping.pop('curves')
+                for idc, curve in curves.items():
+                    for idp, point in curve.items():
+                        if int(idp) > 1:
+                            node.mapping.curves[int(idc)].points.new(point[0], point[1])
+                        else:
+                            node.mapping.curves[int(idc)].points[int(idp)].location = point
+
+                while len(mapping) > 0:
+                    k, v = mapping.popitem()
+                    try:
+                        setattr(node.mapping, k, v)
+                    except Exception as e:
+                        print('failed to set mapping attribute: ' + str(k))
+                        print(e)
+
             parent = n.pop('parent', None)
             if parent is not None:
                 to_parent[name] = parent
@@ -540,10 +563,10 @@ class NS_mat_constructor(NS_nodetree):
             for output, targets in v.items():
                 for name, ids in targets.items():
                     input_ids = []
-                    try:
+                    if isinstance(ids, int):  # ids can be int or list.
+                        input_ids.append(ids)  # This is the very first backwards compatabilty compromise!
+                    else:
                         input_ids.extend(ids)
-                    except TypeError:
-                        input_ids.append(ids)
                     for i in input_ids:
                         try:
                             # nt.links.new(b_nodes[k].outputs[int(output)], b_nodes[name].inputs[i])  # original
@@ -563,8 +586,12 @@ class NS_mat_constructor(NS_nodetree):
 
         for k, v in to_parent.items():
             try:
-                bpy.data.materials[self.b_mat_name_actual].node_tree.nodes[b_node_names[k]].parent = \
-                    bpy.data.materials[self.b_mat_name_actual].node_tree.nodes[b_node_names[v]]
+                if is_material:
+                    bpy.data.materials[self.b_mat_name_actual].node_tree.nodes[b_node_names[k]].parent = \
+                        bpy.data.materials[self.b_mat_name_actual].node_tree.nodes[b_node_names[v]]
+                elif is_nodegroup:
+                    bpy.data.node_groups[nt_parent_name].nodes[b_node_names[k]].parent = \
+                        bpy.data.node_groups[nt_parent_name].nodes[b_node_names[v]]
                 # Location of the frame, if shrink is active, depends on the location of the nodes parented to the frame
                 # but the location of the nodes parented to the frame depends on the location of the frame
                 # the end result is that the frame does not appear in correct position as when copied

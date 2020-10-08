@@ -17,6 +17,8 @@ Easily share procedural materials and shader node setups as text!
 
 NS0B2900!eNqtVk1vozAQ/SuVz06EDeSDW7NNo0hJdtVuV12tKuQEJ7FEIAKT7ariv3dsTEnBaffQAwLPjMdv3jwGXlDCDhwFSPJcUoSR/HdUywOTPBMsBkuSRjxHwQtaGtvV90IeC6lM6zgUkclwv2cRz1YQXfmXTQqRwFrnoCj44/QdbK6nEpx5yDZSnHiYmrwyKzhGcbqBYNd3ses4T7gG2kYBkFm247ANXS8WCBL+SrM0ScXVT/4si4z3Hce/jBWCTDxkikQuWbJREdOHb4v5zfR6BeYtZyoRWG/pu2qcVjUYERSoharTV3cXBUTdPWX3MfL1uqyr6w2JgwkhTXk28BhVzNRnQiuKfJexEz8LG6KAlqUODaOTidRYyHuUBintYHdNvMaqMJ4qLGEkDjzJRZoAAOTeKI5nGYsET+QZAPIhyfUGKGZnHkOjtcV8Nb2++5DYhrAxGeEe8fyGMSuUd5RpZFZV+B3GLExVPVWRFtoHH1Zdb/h/1Xj9oe6E36e6E25/rFVDlX9g4oYtFRF4Q3DPJR7kOpgjO107cxnibydL1LxXttq6yrPSSPEFRXo2RWomxfNl4sB5N5vA4euYJ1GNdjl/bNOoX6m2vMmbvEllgUJGb56GNJdQTB33bLIApm7BPzKRbMQx5tHV5P7mFg79XDMQUOQ8ZPFxz1CwZXHOK8smZoejsZSXSPtSPdVTaNQnWk9aR5/pyXMp7g1GX6umoW2OKRk4VpFglO/Tv6Gs9lcfBTB22nGJrUkebZtgM9wzsS4kFKHGxuzRwqISSnWRNpNGThQuUk1LS7xn4n0jzjOG9Xpk1uN6Nr8NaVLLmdaWah678OSp/njK6dfOOjEZWuVPRubDQ8YdddCuYCi5NHAHrc9vm39LT9u/Cbq/ebHOi2zLNjw8cLlPI8g1ebhbTH+jsixfAao5cd4=
 
+Join the [Discord](https://discord.gg/c9fZKRb) if you have comments, or want to share materials with people!
+
 ## Using Node Sharer
 Node sharer has two commands. 
 * Copy material as text string
@@ -48,15 +50,14 @@ and then converted to base64. This way of sharing data is taken directly from th
 In which you can share blueprints of machines and assembly lines as text strings. 
 
 ### Support/help and bug reports
-Creat a ticket here on Github or contact me on discord: wildiness hashtag 7533. But please check the list below first, 
+Creat a ticket here on Github or join the [Discord](https://discord.gg/UTBGCCv). But please check the list below first, 
 It might be a known issue.
 
 ### Limitations and know bugs
 * This is a Beta release, be careful and save your project before using the Node Sharer commands
 
 * The following nodes are not supported at the moment, they can be copied and pasted but won't retain their settings:
-    - RGB Curves (To be added)
-    - Vector Curves (TBA)
+    - Group input names and min/max values are not supported yet.
     - Script
     - Frame. The frame will not keep its size. And if nodes are parented(=placed inside) to the frame, 
     the pasted location will be wrong.
