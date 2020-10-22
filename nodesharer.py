@@ -25,7 +25,7 @@ SOFTWARE.
 bl_info = {
     "name": "Node Sharer",
     "author": "NodeSharer Devs",
-    "version": (0, 1, 4),
+    "version": (0, 1, 5),
     "blender": (2, 90, 0),
     "location": "Node Editor Toolbar",
     "description": "Share node setups as text strings.",
@@ -611,7 +611,8 @@ class OBJECT_MT_ns_copy_material(bpy.types.Operator):
 
         my_mat = NS_material(context.material)
         my_mat.print_tree()
-        e, length = my_mat.compress()
+        ns_string, length = my_mat.compress()
+        bpy.types.Scene.ns_string = ns_string
         text = 'Copied material as Node Sharer text string to clipboard. Text length: ' + str(length)
         self.report({'INFO'}, text)
 
@@ -646,6 +647,7 @@ def menu_func(self, context):
 
 def register():
     print("\n =============================================== \n")
+    bpy.types.Scene.ns_string = bpy.props.StringProperty(name = "NodeString", default="")
     bpy.utils.register_class(OBJECT_MT_ns_copy_material)
     bpy.utils.register_class(OBJECT_MT_ns_paste_material)
     bpy.types.NODE_MT_node.append(menu_func)
