@@ -40,6 +40,7 @@ import json
 import inspect
 import zlib
 import base64
+from . import compfixer
 
 
 def dump(obj):
@@ -373,6 +374,9 @@ class NS_mat_constructor(NS_nodetree):
         self.uncompressed = self.uncompress(b64_string.split('!')[1])
         # ns_ = Node Sharer
         self.ns_nodes = self.uncompressed['nodes']
+
+        compfixer.fix(self.prefix, self.ns_nodes)  # Fix compatability
+
         self.ns_mat_name = self.uncompressed['name']
         self.ns_groups = self.uncompressed.pop('groups', None)
 
