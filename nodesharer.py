@@ -22,17 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-bl_info = {
-    "name": "Node Sharer",
-    "author": "NodeSharer Devs",
-    "version": (0, 1, 5),
-    "blender": (2, 90, 0),
-    "location": "Node Editor Toolbar",
-    "description": "Share node setups as text strings.",
-    "warning": "Blender can crash when pasting node groups. Save your work before pasting.",
-    "category": "Node",
-    "tracker_url": "https://github.com/wildiness/NodeSharer#supporthelp-and-bug-reports",
-}  # outdated? remove?
 
 import bpy
 import pprint
