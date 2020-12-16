@@ -663,7 +663,7 @@ def unregister():
     bpy.utils.unregister_class(OBJECT_MT_ns_copy_material)
     bpy.utils.unregister_class(OBJECT_MT_ns_paste_material)
     bpy.types.NODE_MT_node.remove(menu_func)
-    print("unregistered OBJECT_MT_ns_copy_material")
+    print("unregistered Add-on: Node Sharer")
 
 
 # This allows you to run the script directly from Blender's Text editor
