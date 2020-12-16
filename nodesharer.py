@@ -22,17 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-bl_info = {
-    "name": "Node Sharer",
-    "author": "NodeSharer Devs",
-    "version": (0, 1, 5),
-    "blender": (2, 90, 0),
-    "location": "Node Editor Toolbar",
-    "description": "Share node setups as text strings.",
-    "warning": "Blender can crash when pasting node groups. Save your work before pasting.",
-    "category": "Node",
-    "tracker_url": "https://github.com/wildiness/NodeSharer#supporthelp-and-bug-reports",
-}  # outdated? remove?
 
 import bpy
 import pprint
@@ -40,6 +29,7 @@ import json
 import inspect
 import zlib
 import base64
+from . import compfixer
 
 
 def dump(obj):
@@ -373,6 +363,9 @@ class NS_mat_constructor(NS_nodetree):
         self.uncompressed = self.uncompress(b64_string.split('!')[1])
         # ns_ = Node Sharer
         self.ns_nodes = self.uncompressed['nodes']
+
+        compfixer.fix(self.prefix, self.ns_nodes)  # Fix compatability
+
         self.ns_mat_name = self.uncompressed['name']
         self.ns_groups = self.uncompressed.pop('groups', None)
 
@@ -659,7 +652,7 @@ def unregister():
     bpy.utils.unregister_class(OBJECT_MT_ns_copy_material)
     bpy.utils.unregister_class(OBJECT_MT_ns_paste_material)
     bpy.types.NODE_MT_node.remove(menu_func)
-    print("unregistered OBJECT_MT_ns_copy_material")
+    print("unregistered Add-on: Node Sharer")
 
 
 # This allows you to run the script directly from Blender's Text editor
