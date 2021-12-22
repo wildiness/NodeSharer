@@ -749,6 +749,54 @@ class CompFixer:
         print('Nodes downgraded to comply with pre Blender 2.91')
 
     @staticmethod
+    def upgrade_to_blender3000(nodes):
+        """
+        Blender 3.0 adds two new(undocumented) inputs to the BSDF node, Subsurface IOR and Subsurface Anisotropy in slots 4 & 5, moving the previous slot 4,5 up etc.
+        Anything that connects to slot 4 or above from before 3.0 will have its slot number increased by two.
+        The input default values will also be updated to match
+        :param nodes: node tree as dict, nodes or groups
+        """
+        _BSDF_node_names = []
+        print('Upgrading nodes to Blender 3.0...')
+        for n in nodes:
+            node = nodes[n]
+
+            if node['bl_idname'] == 'ShaderNodeBsdfPrincipled':
+                # Save the node name for so connections can be updated
+                _BSDF_node_names.append(node['name'])
+
+                # Shift the input default values slots up
+                for i in reversed(range(4, 24 + 1)):
+                    try:
+                        nodes[n]['inputs'][str(i)] = node['inputs'][str(i - 2)]
+                    except KeyError:
+                        """Cant move slots that don't exist, for example slot 18 if the material was previously 
+                        upgraded to blender 2.91 """
+                        pass
+                del nodes[n]['inputs']['4']
+
+        for n in nodes:
+            node = nodes[n]
+            try:
+                for output, targets in node['outputs'].items():
+                    for name, ids in targets.items():
+                        if name in _BSDF_node_names:
+                            # increment by 2 if the slot is 4 or higher
+                            if isinstance(ids, int) and ids >= 4:
+                                nodes[n]['outputs'][output][name] = ids + 2
+                            elif isinstance(ids, list):
+                                tmp_ids = ids.copy()
+                                for pos, i in enumerate(ids):
+                                    if i >= 4:
+                                        tmp_ids[pos] = i + 2
+                                nodes[n]['outputs'][output][name] = tmp_ids
+
+            except KeyError:
+                print('No outputs in node: {}'.format(node['name']))
+
+        print('Nodes upgraded to comply with Blender 3.0')
+
+    @staticmethod
     def version_difference(prefix):
         """
         Not used atm
@@ -774,8 +822,11 @@ class CompFixer:
         bv = bpy.app.version
 
         if bv >= (2, 91, 0):
-            if int(prefix.split('B')[1]) < 2910:
+            if 2800 < int(prefix.split('B')[1]) < 2910:
                 CompFixer.upgrade_to_blender2910(nodes)
+        if bv >= (3, 0, 0):
+            if int(prefix.split('B')[1]) < 3000:
+                CompFixer.upgrade_to_blender3000(nodes)
         elif bv < (2, 91, 0):
             if int(prefix.split('B')[1]) >= 2910:
                 CompFixer.downgrade_from_blender2910(nodes)
