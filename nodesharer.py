@@ -29,7 +29,7 @@ import json
 import inspect
 import zlib
 import base64
-from . import compfixer
+# from . import compfixer
 
 
 def dump(obj):
@@ -364,7 +364,8 @@ class NS_mat_constructor(NS_nodetree):
         # ns_ = Node Sharer
         self.ns_nodes = self.uncompressed['nodes']
 
-        compfixer.fix(self.prefix, self.ns_nodes)  # Fix compatability
+        CompFixer.fix(self.prefix, self.ns_nodes)  # Fix compatability
+
 
         self.ns_mat_name = self.uncompressed['name']
         self.ns_groups = self.uncompressed.pop('groups', None)
@@ -653,6 +654,131 @@ def unregister():
     bpy.utils.unregister_class(OBJECT_MT_ns_paste_material)
     bpy.types.NODE_MT_node.remove(menu_func)
     print("unregistered Add-on: Node Sharer")
+
+
+class CompFixer:
+    """Version compatibility fixing code"""
+
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def upgrade_to_blender2910(nodes):
+        """
+        Blender 2.91 adds a new input to the BSDF node, emit strength in slot 18, moving the previous slot 18 up etc.
+        Anything that connect to slot 18 or above from before 2.91 will have its slot number increased by one.
+        The input default values will also be updated to match
+        :param nodes: node tree as dict, nodes or groups
+        """
+        _BSDF_node_names = []
+        print('Upgrading nodes to Blender 2.91...')
+        for n in nodes:
+            node = nodes[n]
+
+            if node['bl_idname'] == 'ShaderNodeBsdfPrincipled':
+                # Save the node name for so connections can be updated
+                _BSDF_node_names.append(node['name'])
+
+                # Shift the input default values slots up
+                for i in reversed(range(18, 22 + 1)):
+                    nodes[n]['inputs'][str(i)] = node['inputs'][str(i - 1)]
+                del nodes[n]['inputs']['18']
+
+        for n in nodes:
+            node = nodes[n]
+            try:
+                for output, targets in node['outputs'].items():
+                    for name, ids in targets.items():
+                        if name in _BSDF_node_names:
+                            # increment if the slot is 18 or higher
+                            if isinstance(ids, int) and ids >= 18:
+                                nodes[n]['outputs'][output][name] = ids + 1
+                            elif isinstance(ids, list):
+                                tmp_ids = ids.copy()
+                                for pos, i in enumerate(ids):
+                                    if i >= 18:
+                                        tmp_ids[pos] = i + 1
+                                nodes[n]['outputs'][output][name] = tmp_ids
+
+            except KeyError:
+                print('No outputs in node: {}'.format(node['name']))
+
+        print('Nodes upgraded to comply with Blender 2.91')
+
+    @staticmethod
+    def downgrade_from_blender2910(nodes):
+        """
+        Blender 2.91 adds a new input to the BSDF node, emit strength in slot 18, moving the previous slot 18 up etc.
+        Anything that connect to slot 18 or above from 2.91 or after will have its slot number decreased by one.
+        The input default values will also be updated to match
+        :param nodes: node tree as dict, nodes or groups
+        """
+        _BSDF_node_names = []
+        print('Downgrading nodes from Blender 2.91...')
+        for n in nodes:
+            node = nodes[n]
+
+            if node['bl_idname'] == 'ShaderNodeBsdfPrincipled':
+                # Save the node name for so connections can be updated
+                _BSDF_node_names.append(node['name'])
+
+                # Shift the input default values slots down
+                for i in range(18, 22):
+                    nodes[n]['inputs'][str(i)] = node['inputs'][str(i + 1)]
+                del nodes[n]['inputs']['22']
+
+        for n in nodes:
+            node = nodes[n]
+            try:
+                for output, targets in node['outputs'].items():
+                    for name, ids in targets.items():
+                        if name in _BSDF_node_names:
+                            # decrement if the slot is 19 or higher
+                            if isinstance(ids, int) and ids >= 19:
+                                nodes[n]['outputs'][output][name] = ids - 1
+                            elif isinstance(ids, list):
+                                tmp_ids = ids.copy()
+                                for pos, i in enumerate(ids):
+                                    if i >= 19:
+                                        tmp_ids[pos] = i - 1
+                                nodes[n]['outputs'][output][name] = tmp_ids
+
+            except KeyError:
+                print('No outputs in node: {}'.format(node['name']))
+
+        print('Nodes downgraded to comply with pre Blender 2.91')
+
+    @staticmethod
+    def version_difference(prefix):
+        """
+        Not used atm
+        :param prefix:
+        :return:
+        """
+        bv = bpy.app.version
+        blender_version = int(str(bv[0]) + str(bv[1]) + str(bv[2]))
+
+        ns_bv = int(prefix.split('B')[1])
+        if ns_bv != blender_version:
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def fix(prefix, nodes):
+        """
+        Fix compatibility
+        :param prefix: Node Sharer prefix
+        :param nodes: Node Sharer node dict
+        """
+        bv = bpy.app.version
+
+        if bv >= (2, 91, 0):
+            if int(prefix.split('B')[1]) < 2910:
+                CompFixer.upgrade_to_blender2910(nodes)
+        elif bv < (2, 91, 0):
+            if int(prefix.split('B')[1]) >= 2910:
+                CompFixer.downgrade_from_blender2910(nodes)
 
 
 # This allows you to run the script directly from Blender's Text editor
