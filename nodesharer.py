@@ -825,7 +825,7 @@ class CompFixer:
             if 2800 < int(prefix.split('B')[1]) < 2910:
                 CompFixer.upgrade_to_blender2910(nodes)
         if bv >= (3, 0, 0):
-            if int(prefix.split('B')[1]) < 3000:
+            if 2800 < int(prefix.split('B')[1]) < 3000:
                 CompFixer.upgrade_to_blender3000(nodes)
         elif bv < (2, 91, 0):
             if int(prefix.split('B')[1]) >= 2910:
