@@ -1,7 +1,7 @@
 """
 MIT License
 
-Copyright (c) 2021 Node Sharer Devs
+Copyright (c) 2020 Node Sharer Devs
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,7 @@ SOFTWARE.
 bl_info = {
     "name": "Node Sharer",
     "author": "NodeSharer Devs",
-    "version": (0, 2, 1),
+    "version": (0, 2, 0),
     "blender": (2, 90, 0),
     "location": "Node Editor Toolbar",
     "description": "Share node setups as text strings.",
