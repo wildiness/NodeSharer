@@ -1,4 +1,4 @@
-# Node sharer v0.2.1
+# Node sharer v0.2.0
 
 Easily share procedural materials and shader node setups as text!
 
