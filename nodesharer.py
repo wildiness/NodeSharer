@@ -1,7 +1,7 @@
 """
 MIT License
 
-Copyright (c) 2021 Node Sharer Devs
+Copyright (c) 2020 Node Sharer Devs
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ import json
 import inspect
 import zlib
 import base64
-# from . import compfixer
+from . import compfixer
 
 
 def dump(obj):
@@ -364,8 +364,7 @@ class NS_mat_constructor(NS_nodetree):
         # ns_ = Node Sharer
         self.ns_nodes = self.uncompressed['nodes']
 
-        CompFixer.fix(self.prefix, self.ns_nodes)  # Fix compatability
-
+        compfixer.fix(self.prefix, self.ns_nodes)  # Fix compatability
 
         self.ns_mat_name = self.uncompressed['name']
         self.ns_groups = self.uncompressed.pop('groups', None)
@@ -830,6 +829,7 @@ class CompFixer:
         elif bv < (2, 91, 0):
             if int(prefix.split('B')[1]) >= 2910:
                 CompFixer.downgrade_from_blender2910(nodes)
+
 
 
 # This allows you to run the script directly from Blender's Text editor
